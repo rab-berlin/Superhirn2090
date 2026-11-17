@@ -1,0 +1,234 @@
+; superhirn.mic - Superhirn (Mastermind) fuer Busch Microtronic 2090 mit LED-Matrix (ESP2090 Studio)
+; Matrix (Zeile 0 unten, Spalte 0 links), eine Zeile je Versuch, 8 Versuche:
+;   Spalten 0-3: die vier Stecker, Farbe 1-6 = rot, orange, gelb, gruen, tuerkis, blau
+;   Spalten 4-7: Bewertung von rechts nach links: erst magenta = Farbe am richtigen Platz,
+;   dann weiss = Farbe kommt vor, falscher Platz
+;   Versuch 1 in Zeile 0, jeder weitere eine Zeile hoeher; er beginnt als Kopie des letzten.
+; Display (beim Warten auf eine Taste): Nummer des Versuchs 1-8; am Ende Versuche bis zum Treffer, 0 = nicht geloest
+; Start: Matrix wach (LED on; Emulator2090: m), HALT NEXT 00 RUN. Kein Userscript noetig (Farben der Firmware).
+;        Die Zeit von RESET bis RUN bestimmt den ersten Code, danach die Wartezeit am Spielende.
+; Tasten: 0-3 naechste Farbe fuer Stecker 1-4, 4-7 vorige Farbe fuer Stecker 1-4, F bewerten; 8-E nichts.
+;   Erster Versuch: rot rot orange orange.
+; Ende: vier magenta = geloest. Nach dem 8. Fehlversuch rutscht das Brett eine Zeile nach unten (Versuch 1
+;   verschwindet) und in Zeile 7 steht der Code. Eine Taste beginnt ein neues Spiel.
+; Matrixbefehle ohne Wartezeit dazwischen: jeder Befehl endet mit 0 an den Ausgaengen (DOT R8 bzw. DOT RF),
+;   PEGS faengt das REQ nach jedem Befehl noch im selben Fenster; R8 = 0 waehrend PEGS.
+; Keine verschachtelten CALLs.
+;
+; Register: R0-R3 Versuch (Stecker 1-4, Farbe 1-6), R4 = E (ACK 14), R5 = 4 (ACK 4), R6 Matrixzeile,
+;   R7 Versuch 1-8 (Display), R8 Taste bzw. 0 fuer PEGS, R9 x + 9 (Zeichenart 1, PEGS zaehlt vorher herunter),
+;   RA Farbe, RB Zahl der Pixel;
+;   in der Bewertung R8-RB Kopie des Codes, RC schwarz, RD gesamt, dann weiss, RE Hilfe;
+;   CMD: RE ACK, RD 1. Nibble, RC 2. Nibble; RF REQ
+; M8-MB: der Code (RND, bleibt das ganze Spiel)
+
+F02 ; 00 START:      DISOUT               Anzeige aus: 9,3 ms je Schritt, die Matrix braucht das
+1E4 ; 01             MOVI   E,r4          Konstanten fuer PEGS
+145 ; 02             MOVI   4,r5
+13E ; 03 NEW:        MOVI   3,rE          ACK 3,3: alle Pixel aus, Farben bleiben
+13D ; 04             MOVI   3,rD
+BB8 ; 05             CALL   CMD
+F05 ; 06             RND                  Zaehler RD RE RF: Zeit seit RESET bzw. Wartezeit am Spielende
+100 ; 07             MOVI   0,r0          Code: Stecker 1-3 = D, E, F modulo 6; Stecker 4 aus den Quotienten:
+111 ; 08             MOVI   1,r1          (D / 6 + 2 E / 6 + 3 F / 6) modulo 6; alle 1296 Codes moeglich
+0DC ; 09             MOV    rD,rC
+BB1 ; 0A             CALL   MOD
+0C8 ; 0B             MOV    rC,r8
+121 ; 0C             MOVI   2,r1
+0EC ; 0D             MOV    rE,rC
+BB1 ; 0E             CALL   MOD
+0C9 ; 0F             MOV    rC,r9
+131 ; 10             MOVI   3,r1
+0FC ; 11             MOV    rF,rC
+BB1 ; 12             CALL   MOD
+0CA ; 13             MOV    rC,rA
+00C ; 14             MOV    r0,rC
+BB1 ; 15             CALL   MOD
+0CB ; 16             MOV    rC,rB
+F78 ; 17             MAS    r8            Code nach M8-MB
+F79 ; 18             MAS    r9
+F7A ; 19             MAS    rA
+F7B ; 1A             MAS    rB
+110 ; 1B             MOVI   1,r0          erster Versuch: rot rot orange orange
+111 ; 1C             MOVI   1,r1
+122 ; 1D             MOVI   2,r2
+123 ; 1E             MOVI   2,r3
+117 ; 1F             MOVI   1,r7
+106 ; 20             MOVI   0,r6          Zeile 0
+108 ; 21 ROW:        MOVI   0,r8          R3-R0 in Zeile R6 zeichnen, von rechts
+1C9 ; 22             MOVI   C,r9
+11B ; 23             MOVI   1,rB
+03A ; 24             MOV    r3,rA
+BCF ; 25             CALL   PEGS
+11B ; 26             MOVI   1,rB
+02A ; 27             MOV    r2,rA
+BCF ; 28             CALL   PEGS
+11B ; 29             MOVI   1,rB
+01A ; 2A             MOV    r1,rA
+BCF ; 2B             CALL   PEGS
+11B ; 2C             MOVI   1,rB
+00A ; 2D             MOV    r0,rA
+BCF ; 2E             CALL   PEGS
+077 ; 2F             MOV    r7,r7         R7 = 0: Code aufgedeckt, Spielende
+E8E ; 30             BRZ    OVER
+F17 ; 31 KEY:        DISP   1,r7          Display: Versuch
+FF8 ; 32             KIN    r8
+F02 ; 33             DISOUT
+9F8 ; 34             CMPI   F,r8          F: bewerten
+E54 ; 35             BRZ    EVAL
+978 ; 36             CMPI   7,r8          8-E: nichts
+D31 ; 37             BRC    KEY
+089 ; 38             MOV    r8,r9
+339 ; 39             ANDI   3,r9          Stecker 0-3
+09B ; 3A             MOV    r9,rB
+E44 ; 3B             BRZ    P0
+71B ; 3C             SUBI   1,rB
+E48 ; 3D             BRZ    P1
+71B ; 3E             SUBI   1,rB
+E4C ; 3F             BRZ    P2
+03A ; 40 P3:         MOV    r3,rA
+BA4 ; 41             CALL   CYC
+0A3 ; 42             MOV    rA,r3
+C4F ; 43             GOTO   KD
+00A ; 44 P0:         MOV    r0,rA
+BA4 ; 45             CALL   CYC
+0A0 ; 46             MOV    rA,r0
+C4F ; 47             GOTO   KD
+01A ; 48 P1:         MOV    r1,rA
+BA4 ; 49             CALL   CYC
+0A1 ; 4A             MOV    rA,r1
+C4F ; 4B             GOTO   KD
+02A ; 4C P2:         MOV    r2,rA
+BA4 ; 4D             CALL   CYC
+0A2 ; 4E             MOV    rA,r2
+599 ; 4F KD:         ADDI   9,r9          ein Pixel (Stecker, Zeile) in der neuen Farbe
+11B ; 50             MOVI   1,rB
+108 ; 51             MOVI   0,r8
+BCF ; 52             CALL   PEGS
+C31 ; 53             GOTO   KEY
+F0E ; 54 EVAL:       EXRM                 Code nach R8-RB (M8-MF bekommen die Hilfsregister) ...
+F78 ; 55             MAS    r8            ... und gleich wieder sichern
+F79 ; 56             MAS    r9
+F7A ; 57             MAS    rA
+F7B ; 58             MAS    rB
+10C ; 59             MOVI   0,rC          schwarz: gleiche Farbe am gleichen Platz
+00E ; 5A             MOV    r0,rE
+68E ; 5B             SUB    r8,rE
+71E ; 5C             SUBI   1,rE          Borgen nur bei 0 ...
+FBC ; 5D             ADC    rC            ... dann schwarz + 1
+01E ; 5E             MOV    r1,rE
+69E ; 5F             SUB    r9,rE
+71E ; 60             SUBI   1,rE
+FBC ; 61             ADC    rC
+02E ; 62             MOV    r2,rE
+6AE ; 63             SUB    rA,rE
+71E ; 64             SUBI   1,rE
+FBC ; 65             ADC    rC
+03E ; 66             MOV    r3,rE
+6BE ; 67             SUB    rB,rE
+71E ; 68             SUBI   1,rE
+FBC ; 69             ADC    rC
+10D ; 6A             MOVI   0,rD          gesamt: jeder Stecker sucht eine freie gleiche Farbe im Code
+00E ; 6B             MOV    r0,rE
+B92 ; 6C             CALL   TOT
+01E ; 6D             MOV    r1,rE
+B92 ; 6E             CALL   TOT
+02E ; 6F             MOV    r2,rE
+B92 ; 70             CALL   TOT
+03E ; 71             MOV    r3,rE
+B92 ; 72             CALL   TOT
+6CD ; 73             SUB    rC,rD         weiss = gesamt - schwarz
+108 ; 74             MOVI   0,r8
+109 ; 75             MOVI   0,r9          Bewertung ab x = 7 nach links (0 = 7 + 9 modulo 16)
+18A ; 76             MOVI   8,rA          magenta: schwarz
+0CB ; 77             MOV    rC,rB
+BCF ; 78             CALL   PEGS
+19A ; 79             MOVI   9,rA          weiss
+0DB ; 7A             MOV    rD,rB
+BCF ; 7B             CALL   PEGS
+94C ; 7C             CMPI   4,rC          geloest?
+E8E ; 7D             BRZ    OVER
+987 ; 7E             CMPI   8,r7          das war der letzte Versuch?
+E83 ; 7F             BRZ    LOSE
+517 ; 80             ADDI   1,r7          naechster Versuch eine Zeile hoeher, als Kopie
+516 ; 81             ADDI   1,r6
+C21 ; 82             GOTO   ROW
+1BE ; 83 LOSE:       MOVI   B,rE          ACK 11,3: alles eine Zeile nach unten, Zeile 7 wird frei
+13D ; 84             MOVI   3,rD
+BB8 ; 85             CALL   CMD
+F0E ; 86             EXRM                 Code nach R8-RB ...
+080 ; 87             MOV    r8,r0         ... und in Zeile 7
+091 ; 88             MOV    r9,r1
+0A2 ; 89             MOV    rA,r2
+0B3 ; 8A             MOV    rB,r3
+176 ; 8B             MOVI   7,r6
+107 ; 8C             MOVI   0,r7          Display 0, ROW endet in OVER
+C21 ; 8D             GOTO   ROW
+F17 ; 8E OVER:       DISP   1,r7          Ende: Versuche bis zum Treffer, 0 = nicht geloest
+FFF ; 8F             KIN    rF
+F02 ; 90             DISOUT
+C03 ; 91             GOTO   NEW
+8E8 ; 92 TOT:        CMP    rE,r8         Stecker RE gegen den Code
+E9B ; 93             BRZ    H8
+8E9 ; 94             CMP    rE,r9
+E9D ; 95             BRZ    H9
+8EA ; 96             CMP    rE,rA
+E9F ; 97             BRZ    HA
+8EB ; 98             CMP    rE,rB
+EA1 ; 99             BRZ    HB
+F07 ; 9A             RET
+1F8 ; 9B H8:         MOVI   F,r8          vergeben (F ist keine Farbe)
+CA2 ; 9C             GOTO   HIT
+1F9 ; 9D H9:         MOVI   F,r9
+CA2 ; 9E             GOTO   HIT
+1FA ; 9F HA:         MOVI   F,rA
+CA2 ; A0             GOTO   HIT
+1FB ; A1 HB:         MOVI   F,rB
+51D ; A2 HIT:        ADDI   1,rD
+F07 ; A3             RET
+938 ; A4 CYC:        CMPI   3,r8          Taste 4-7: rueckwaerts
+DAC ; A5             BRC    CB
+51A ; A6             ADDI   1,rA          naechste Farbe, nach 6 wieder 1
+96A ; A7             CMPI   6,rA
+DAA ; A8             BRC    CW
+F07 ; A9             RET
+11A ; AA CW:         MOVI   1,rA
+F07 ; AB             RET
+71A ; AC CB:         SUBI   1,rA          vorige Farbe, vor 1 wieder 6
+EAF ; AD             BRZ    CV
+F07 ; AE             RET
+16A ; AF CV:         MOVI   6,rA
+F07 ; B0             RET
+95C ; B1 MOD:        CMPI   5,rC          RC modulo 6, + 1 = Farbe 1-6; R0 + R1 je abgezogene 6
+DB5 ; B2             BRC    M6
+51C ; B3             ADDI   1,rC
+F07 ; B4             RET
+76C ; B5 M6:         SUBI   6,rC
+410 ; B6             ADD    r1,r0
+CB1 ; B7             GOTO   MOD
+FDF ; B8 CMD:        DIN    rF            Matrixbefehl RE mit RD, RC; an den Ausgaengen liegt 0
+31F ; B9             ANDI   1,rF
+EB8 ; BA             BRZ    CMD
+FEE ; BB             DOT    rE            ACK
+FED ; BC             DOT    rD            1. Nibble
+FEC ; BD             DOT    rC            2. Nibble (bei ACK 3/11 bedeutungslos)
+71F ; BE             SUBI   1,rF          danach 0 (erst nach dem Lesen des 2. Nibbles)
+FEF ; BF             DOT    rF
+F07 ; C0             RET
+FDF ; C1 PEG:        DIN    rF            auf REQ warten (an den Ausgaengen liegt 0)
+31F ; C2             ANDI   1,rF
+EC1 ; C3             BRZ    PEG
+FE4 ; C4             DOT    r4            ACK 14
+FEA ; C5             DOT    rA            Farbe
+FE8 ; C6             DOT    r8            0; das naechste REQ kommt etwa 24 ms nach dem ACK
+5F9 ; C7             ADDI   F,r9          ein Pixel nach links
+FDF ; C8 PW:         DIN    rF
+31F ; C9             ANDI   1,rF
+EC8 ; CA             BRZ    PW
+FE5 ; CB             DOT    r5            ACK 4 (R9, R6): Pixel in Farbe RA an
+FE9 ; CC             DOT    r9
+FE6 ; CD             DOT    r6
+FE8 ; CE             DOT    r8            0 bleibt stehen
+5FB ; CF PEGS:       ADDI   F,rB          RB Pixel ab R9 - 1 nach links (Einsprung): Uebertrag, solange RB vorher ab 1
+DC1 ; D0             BRC    PEG
+F07 ; D1             RET
