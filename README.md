@@ -7,7 +7,7 @@ Superhirn (im Original *Mastermind*) für den Busch Microtronic 2090 mit dem [ES
 - Kein Userscript nötig
 - Getestet im [Emulator2090](https://github.com/rab-berlin/Emulator2090), noch nicht am Gerät
 
-![Ein Spiel im Emulator2090: gelöst im vierten Versuch](bilder/spiel.gif)
+![Ein Spiel im Emulator2090: gelöst im sechsten Versuch](bilder/spiel.gif)
 
 ## Spiel
 
