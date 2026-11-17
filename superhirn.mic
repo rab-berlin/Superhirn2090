@@ -8,7 +8,7 @@
 ; Start: Matrix wach (LED on; Emulator2090: m), HALT NEXT 00 RUN. Kein Userscript noetig (Farben der Firmware).
 ;        Die Zeit von RESET bis RUN bestimmt den ersten Code, danach die Wartezeit am Spielende.
 ; Tasten: 0-3 naechste Farbe fuer Stecker 1-4, 4-7 vorige Farbe fuer Stecker 1-4, F bewerten; 8-E nichts.
-;   Erster Versuch: rot rot orange orange.
+;   Erster Versuch: rot orange gelb gruen.
 ; Ende: vier magenta = geloest. Nach dem 8. Fehlversuch rutscht das Brett eine Zeile nach unten (Versuch 1
 ;   verschwindet) und in Zeile 7 steht der Code. Eine Taste beginnt ein neues Spiel.
 ; Matrixbefehle ohne Wartezeit dazwischen: jeder Befehl endet mit 0 an den Ausgaengen (DOT R8 bzw. DOT RF),
@@ -49,10 +49,10 @@ F78 ; 17             MAS    r8            Code nach M8-MB
 F79 ; 18             MAS    r9
 F7A ; 19             MAS    rA
 F7B ; 1A             MAS    rB
-110 ; 1B             MOVI   1,r0          erster Versuch: rot rot orange orange
-111 ; 1C             MOVI   1,r1
-122 ; 1D             MOVI   2,r2
-123 ; 1E             MOVI   2,r3
+110 ; 1B             MOVI   1,r0          erster Versuch: rot orange gelb gruen
+121 ; 1C             MOVI   2,r1
+132 ; 1D             MOVI   3,r2
+143 ; 1E             MOVI   4,r3
 117 ; 1F             MOVI   1,r7
 106 ; 20             MOVI   0,r6          Zeile 0
 108 ; 21 ROW:        MOVI   0,r8          R3-R0 in Zeile R6 zeichnen, von rechts

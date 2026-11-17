@@ -1,13 +1,13 @@
 # Superhirn2090
 
-Superhirn (im Original *Mastermind*) für den Busch Microtronic 2090 mit dem [ESP2090 Studio](https://github.com/rab-berlin/ESP2090) (8x8-LED-Matrix mit Farben): Der 2090 denkt sich einen Code aus vier Farben aus, man rät ihn in höchstens acht Versuchen. Nach jedem Versuch sagt er, wie viele Farben am richtigen Platz stehen und wie viele zwar vorkommen, aber an einer anderen Stelle.
+Superhirn (im Original *Mastermind*) für den Busch Microtronic 2090 mit dem [ESP2090 Studio](https://github.com/rab-berlin/ESP2090) (8x8-LED-Matrix mit Farben): Der 2090 denkt sich einen Code aus vier Farben aus, man rät ihn in höchstens acht Versuchen. Nach jedem Versuch bewertet er ihn mit Stiften: magenta für jede Farbe am richtigen Platz, weiß für jede Farbe, die vorkommt, aber an einer anderen Stelle steht.
 
 - 210 Programmschritte, 46 frei
 - Datei: [superhirn.mic](superhirn.mic), das kommentierte Listing
 - Kein Userscript nötig
 - Getestet im [Emulator2090](https://github.com/rab-berlin/Emulator2090), noch nicht am Gerät
 
-![Ein Spiel im Emulator2090: gelöst im sechsten Versuch](bilder/spiel.gif)
+![Ein Spiel im Emulator2090: gelöst im fünften Versuch](bilder/spiel.gif)
 
 ## Spiel
 
@@ -20,7 +20,7 @@ Jede Zeile der Matrix ist ein Versuch. Versuch 1 steht in der untersten Zeile, j
 
 - **Farben der Stecker:** rot, orange, gelb, grün, türkis, blau. Jede Farbe darf mehrfach vorkommen, auch im Code.
 - **Bewertung:** Für jede Farbe am richtigen Platz leuchtet ganz rechts ein **magenta** Stift (im Original schwarz). Links daneben leuchtet für jede Farbe, die vorkommt, aber an einer anderen Stelle steht, ein **weißer** Stift. Welcher Stift zu welchem Stecker gehört, verrät die Bewertung nicht.
-- **Neuer Versuch:** Er beginnt als Kopie des letzten, man ändert nur die Stecker, die anders sein sollen. Der erste Versuch steht auf rot rot orange orange, das ist auch Donald Knuths Eröffnung (siehe unten).
+- **Neuer Versuch:** Er beginnt als Kopie des letzten, man ändert nur die Stecker, die anders sein sollen. Der erste Versuch steht auf rot, orange, gelb, grün.
 - **Gelöst:** vier magenta Stifte. Die Anzeige zeigt die Zahl der Versuche.
 - **Nicht gelöst:** Nach dem achten Fehlversuch rutscht das Brett eine Zeile nach unten, Versuch 1 verschwindet, und in der obersten Zeile steht der Code. Die Anzeige zeigt `0`.
 - **Zufall:** Den ersten Code bestimmt die Zeit von RESET bis RUN, jeden weiteren die Wartezeit am Ende des vorigen Spiels. Alle 1296 Codes sind möglich.
@@ -54,7 +54,7 @@ Farbnummern der Matrix: 1 rot, 2 orange, 3 gelb, 4 grün, 5 türkis, 6 blau, 7 v
 
 - **Farbe für „richtiger Platz“:** Adresse 76, Befehl `18A` (`MOVI 8,rA`, magenta). Violett wäre `17A`.
 - **Farbe für „falscher Platz“:** Adresse 79, Befehl `19A` (`MOVI 9,rA`, weiß).
-- **Erster Versuch:** Adressen 1B bis 1E, Befehle `110` `111` `122` `123` (`MOVI Farbe,r0` bis `r3`). Die mittlere Ziffer ist die Farbe 1-6.
+- **Erster Versuch:** Adressen 1B bis 1E, Befehle `110` `121` `132` `143` (`MOVI Farbe,r0` bis `r3`). Die mittlere Ziffer ist die Farbe 1-6.
 - **Zahl der Versuche:** Adresse 7E, Befehl `987` (`CMPI 8,r7`). Weniger Versuche gehen auch, zum Beispiel sechs mit `967`; mehr als acht passen nicht auf die Matrix.
 
 ## Wie es gemacht ist
