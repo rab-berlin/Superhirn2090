@@ -22,7 +22,7 @@ Jede Zeile der Matrix ist ein Versuch. Versuch 1 steht in der untersten Zeile, j
 - **Bewertung:** Für jede Farbe am richtigen Platz leuchtet ganz rechts ein **magenta** Stift (im Original schwarz). Links daneben leuchtet für jede Farbe, die vorkommt, aber an einer anderen Stelle steht, ein **weißer** Stift. Welcher Stift zu welchem Stecker gehört, verrät die Bewertung nicht.
 - **Neuer Versuch:** Er beginnt als Kopie des letzten, man ändert nur die Stecker, die anders sein sollen. Der erste Versuch steht auf rot, orange, gelb, grün.
 - **Gelöst:** vier magenta Stifte. Die Anzeige zeigt die Zahl der Versuche.
-- **Aufgeben:** Mit `F` deckt das Programm den Code in der obersten Zeile auf, die Anzeige zeigt `0`.
+- **Aufgeben:** Mit `C` deckt das Programm den Code in der obersten Zeile auf, die Anzeige zeigt `0`.
 - **Nicht gelöst:** Nach dem achten Fehlversuch rutscht das Brett eine Zeile nach unten, Versuch 1 verschwindet, und in der obersten Zeile steht der Code. Die Anzeige zeigt `0`.
 - **Zufall:** Den ersten Code bestimmt die Zeit von RESET bis RUN, jeden weiteren die Wartezeit am Ende des vorigen Spiels. Alle 1296 Codes sind möglich.
 
@@ -41,13 +41,13 @@ Das Programm färbt jedes Pixel selbst und benutzt nur die Farben, mit denen der
 |---|---|
 | `0` `1` `2` `3` | nächste Farbe für Stecker 1, 2, 3, 4 |
 | `4` `5` `6` `7` | vorige Farbe für Stecker 1, 2, 3, 4 |
-| `C` | Versuch bewerten |
-| `F` | aufgeben, Code zeigen |
+| `F` | Versuch bewerten |
+| `C` | aufgeben, Code zeigen |
 | `8` `9` `A` `B` `D` `E` | nichts |
 
 - Die Farben laufen im Kreis: rot, orange, gelb, grün, türkis, blau, wieder rot.
 - Die Anzeige zeigt beim Warten auf eine Taste die Nummer des Versuchs.
-- Nach einer Farbtaste dauert es etwa 0,4 Sekunden, bis die nächste Taste angenommen wird, nach `C` etwa 2 Sekunden. In dieser Zeit nimmt das Programm keine Taste an.
+- Nach einer Farbtaste dauert es etwa 0,4 Sekunden, bis die nächste Taste angenommen wird, nach `F` etwa 2 Sekunden. In dieser Zeit nimmt das Programm keine Taste an.
 - **Emulator2090:** Die Hex-Tasten der Computertastatur sind die Tasten des 2090, `m` schaltet die Matrix ein.
 
 ## Einstellen
@@ -70,7 +70,7 @@ Der 2090 hat 16 Register zu je 4 Bit, dazu 16 Speicherregister, und keine indire
 - **Den Code nicht verlieren.** Das Markieren zerstört den Code. Deshalb holt `EXRM` ihn vor jeder Bewertung aus M8-MB in die Arbeitsregister, und `MAS` legt sofort wieder eine Kopie zurück. Der Versuch in R0-R3 bleibt dabei unverändert, er wird zur Kopie für den nächsten Versuch.
 - **1296 Codes aus 12 Bit.** `RND` liefert drei Hex-Ziffern, die von der Wartezeit abhängen. Stecker 1-3 sind diese Ziffern geteilt durch 6, der Rest. Stecker 4 kommt aus den Quotienten dieser drei Divisionen. So sind alle 6 × 6 × 6 × 6 = 1296 Codes möglich. Einfachere Mischungen der drei Ziffern erreichen nur 216 oder 646 Codes.
 - **Zwei Befehle je Pixel.** Die Matrix kennt Zeichenbefehle: erst die Farbe wählen, dann ein Pixel in dieser Farbe einschalten. Zwischen zwei Befehlen meldet sich der ESP2090 mit einem Signal (REQ) und wartet 30 ms auf den nächsten. Verpasst das Programm dieses Fenster, kostet das etwa 90 ms. Das Programm ist deshalb so geordnet, dass es nach jedem Befehl spätestens 56 ms später wieder auf das REQ wartet: Für die vier Stifte der Bewertung braucht es etwa 0,6 Sekunden statt fast 0,9.
-- **Kopie durch Neuzeichnen.** Der neue Versuch übernimmt die Farben des letzten. Weil die Versuche fest übereinander stehen, zeichnet das Programm die vier Stecker in der nächsten Zeile neu, acht Befehle. Das ist der größte Teil der zwei Sekunden nach `C`.
+- **Kopie durch Neuzeichnen.** Der neue Versuch übernimmt die Farben des letzten. Weil die Versuche fest übereinander stehen, zeichnet das Programm die vier Stecker in der nächsten Zeile neu, acht Befehle. Das ist der größte Teil der zwei Sekunden nach `F`.
 - **Aufdecken.** Für den Code ist nach acht Versuchen keine Zeile mehr frei. Ein einziger Befehl schiebt das ganze Bild eine Zeile nach unten, dann zeichnet das Programm den Code in die frei gewordene oberste Zeile. Beim Aufgeben ist die oberste Zeile noch frei (oder es ist die des offenen Versuchs), dort steht der Code ohne Schieben.
 
 ## Geschichte

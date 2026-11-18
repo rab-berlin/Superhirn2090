@@ -7,7 +7,7 @@
 ; Display (beim Warten auf eine Taste): Nummer des Versuchs 1-8; am Ende Versuche bis zum Treffer, 0 = nicht geloest
 ; Start: Matrix wach (LED on; Emulator2090: m), HALT NEXT 00 RUN. Kein Userscript noetig (Farben der Firmware).
 ;        Die Zeit von RESET bis RUN bestimmt den ersten Code, danach die Wartezeit am Spielende.
-; Tasten: 0-3 naechste Farbe fuer Stecker 1-4, 4-7 vorige Farbe fuer Stecker 1-4, C bewerten, F aufgeben
+; Tasten: 0-3 naechste Farbe fuer Stecker 1-4, 4-7 vorige Farbe fuer Stecker 1-4, F bewerten, C aufgeben
 ;   (Code in Zeile 7, Display 0); 8-B, D, E nichts.
 ;   Erster Versuch: rot orange gelb gruen.
 ; Ende: vier magenta = geloest. Nach dem 8. Fehlversuch rutscht das Brett eine Zeile nach unten (Versuch 1
@@ -75,9 +75,9 @@ E90 ; 30             BRZ    OVER
 F17 ; 31 KEY:        DISP   1,r7          Display: Versuch
 FF8 ; 32             KIN    r8
 F02 ; 33             DISOUT
-9C8 ; 34             CMPI   C,r8          C: bewerten
+9F8 ; 34             CMPI   F,r8          F: bewerten
 E56 ; 35             BRZ    EVAL
-9F8 ; 36             CMPI   F,r8          F: aufgeben
+9C8 ; 36             CMPI   C,r8          C: aufgeben
 E88 ; 37             BRZ    GIVE
 978 ; 38             CMPI   7,r8          8-B, D, E: nichts
 D31 ; 39             BRC    KEY
