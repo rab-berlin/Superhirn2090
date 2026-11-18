@@ -16,7 +16,7 @@ Jede Zeile der Matrix ist ein Versuch. Versuch 1 steht in der untersten Zeile, j
 | **links** (0-3) | die vier Stecker des Versuchs |
 | **rechts** (4-7) | die Bewertung, von rechts nach links |
 
-- **Farben der Stecker:** rot, orange, gelb, grün, türkis, blau. Jede Farbe darf mehrfach vorkommen, auch im Code.
+- **Farben der Stecker:** rot, orange, gelb, grün, türkis, blau. Jede Farbe darf mehrfach vorkommen.
 - **Bewertung:** Für jede Farbe am richtigen Platz leuchtet ganz rechts ein **magenta** Stift (im Original schwarz). Links daneben leuchtet für jede Farbe, die vorkommt, aber an einer anderen Stelle steht, ein **weißer** Stift. Welcher Stift zu welchem Stecker gehört, verrät die Bewertung nicht.
 - **Neuer Versuch:** Er beginnt als Kopie des letzten, man ändert nur die Stecker, die anders sein sollen. Der erste Versuch steht auf rot, orange, gelb, grün.
 - **Gelöst:** vier magenta Stifte. Die Anzeige zeigt die Zahl der Versuche.
