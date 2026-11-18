@@ -31,7 +31,7 @@ Jede Zeile der Matrix ist ein Versuch. Versuch 1 steht in der untersten Zeile, j
 
 In der untersten Zeile steht der erste Versuch, die Anzeige zeigt `1`. Nach dem Spielende startet eine beliebige Taste das nächste Spiel, ein RESET ist nicht nötig.
 
-Das Programm färbt jedes Pixel selbst und benutzt nur die Farben, mit denen der ESP2090 startet. Hat das Userscript eines anderen Programms die Farben verändert (zum Beispiel der Irrgarten), den ESP2090 neu starten.
+Das Programm färbt jedes Pixel selbst und benutzt nur die Farben, mit denen der ESP2090 startet.
 
 ## Bedienung
 
