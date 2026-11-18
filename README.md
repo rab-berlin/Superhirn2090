@@ -7,23 +7,6 @@ Superhirn (im Original *Mastermind*) für den Busch Microtronic 2090 mit dem [ES
 
 ![Ein Spiel im Emulator2090: gelöst im fünften Versuch](bilder/spiel.gif)
 
-## Spiel
-
-Jede Zeile der Matrix ist ein Versuch. Versuch 1 steht in der untersten Zeile, jeder weitere eine Zeile darüber.
-
-| Spalten | Inhalt |
-|---|---|
-| **links** (0-3) | die vier Stecker des Versuchs |
-| **rechts** (4-7) | die Bewertung, von rechts nach links |
-
-- **Farben der Stecker:** rot, orange, gelb, grün, türkis, blau. Jede Farbe darf mehrfach vorkommen.
-- **Bewertung:** Für jede Farbe am richtigen Platz leuchtet ganz rechts ein **magenta** Stift (im Original schwarz). Links daneben leuchtet für jede Farbe, die vorkommt, aber an einer anderen Stelle steht, ein **weißer** Stift. Welcher Stift zu welchem Stecker gehört, verrät die Bewertung nicht.
-- **Neuer Versuch:** Er beginnt als Kopie des letzten, man ändert nur die Stecker, die anders sein sollen. Der erste Versuch steht auf rot, orange, gelb, grün.
-- **Gelöst:** vier magenta Stifte. Die Anzeige zeigt die Zahl der Versuche.
-- **Aufgeben:** Mit `C` deckt das Programm den Code in der obersten Zeile auf, die Anzeige zeigt `0`.
-- **Nicht gelöst:** Nach dem achten Fehlversuch rutscht das Brett eine Zeile nach unten, Versuch 1 verschwindet, und in der obersten Zeile steht der Code. Die Anzeige zeigt `0`.
-- **Zufall:** Den ersten Code bestimmt die Zeit von RESET bis RUN, jeden weiteren die Wartezeit am Ende des vorigen Spiels. Alle 1296 Codes sind möglich.
-
 ## Start
 
 1. Matrix einschalten („LED on“ in der Weboberfläche).
@@ -46,6 +29,23 @@ Das Programm färbt jedes Pixel selbst und benutzt nur die Farben, mit denen der
 - Die Farben laufen im Kreis: rot, orange, gelb, grün, türkis, blau, wieder rot.
 - Die Anzeige zeigt beim Warten auf eine Taste die Nummer des Versuchs.
 - Nach einer Farbtaste dauert es etwa 0,4 Sekunden, bis die nächste Taste angenommen wird, nach `F` etwa 2 Sekunden. In dieser Zeit nimmt das Programm keine Taste an.
+
+## Spiel
+
+Jede Zeile der Matrix ist ein Versuch. Versuch 1 steht in der untersten Zeile, jeder weitere eine Zeile darüber.
+
+| Spalten | Inhalt |
+|---|---|
+| **links** (0-3) | die vier Stecker des Versuchs |
+| **rechts** (4-7) | die Bewertung, von rechts nach links |
+
+- **Farben der Stecker:** rot, orange, gelb, grün, türkis, blau. Jede Farbe darf mehrfach vorkommen.
+- **Bewertung:** Für jede Farbe am richtigen Platz leuchtet ganz rechts ein **magenta** Stift (im Original schwarz). Links daneben leuchtet für jede Farbe, die vorkommt, aber an einer anderen Stelle steht, ein **weißer** Stift. Welcher Stift zu welchem Stecker gehört, verrät die Bewertung nicht.
+- **Neuer Versuch:** Er beginnt als Kopie des letzten, man ändert nur die Stecker, die anders sein sollen. Der erste Versuch steht auf rot, orange, gelb, grün.
+- **Gelöst:** vier magenta Stifte. Die Anzeige zeigt die Zahl der Versuche.
+- **Aufgeben:** Mit `C` deckt das Programm den Code in der obersten Zeile auf, die Anzeige zeigt `0`.
+- **Nicht gelöst:** Nach dem achten Fehlversuch rutscht das Brett eine Zeile nach unten, Versuch 1 verschwindet, und in der obersten Zeile steht der Code. Die Anzeige zeigt `0`.
+- **Zufall:** Den ersten Code bestimmt die Zeit von RESET bis RUN, jeden weiteren die Wartezeit am Ende des vorigen Spiels. Alle 1296 Codes sind möglich.
 
 ## Einstellen
 
