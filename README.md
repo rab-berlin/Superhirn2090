@@ -22,9 +22,8 @@ Das Programm färbt jedes Pixel selbst und benutzt nur die Farben, mit denen der
 |---|---|
 | `0` `1` `2` `3` | nächste Farbe für Stecker 1, 2, 3, 4 |
 | `4` `5` `6` `7` | vorige Farbe für Stecker 1, 2, 3, 4 |
-| `F` | Versuch bewerten |
+| `F` | Versuch absenden |
 | `C` | aufgeben, Code zeigen |
-| `8` `9` `A` `B` `D` `E` | nichts |
 
 - Die Farben laufen im Kreis: rot, orange, gelb, grün, türkis, blau, wieder rot.
 - Die Anzeige zeigt beim Warten auf eine Taste die Nummer des Versuchs.
