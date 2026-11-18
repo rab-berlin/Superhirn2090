@@ -4,8 +4,6 @@ Superhirn (im Original *Mastermind*) für den Busch Microtronic 2090 mit dem [ES
 
 - 212 Programmschritte, 44 frei
 - Datei: [superhirn.mic](superhirn.mic), das kommentierte Listing
-- Kein Userscript nötig
-- Getestet im [Emulator2090](https://github.com/rab-berlin/Emulator2090), noch nicht am Gerät
 
 ![Ein Spiel im Emulator2090: gelöst im fünften Versuch](bilder/spiel.gif)
 
@@ -48,7 +46,6 @@ Das Programm färbt jedes Pixel selbst und benutzt nur die Farben, mit denen der
 - Die Farben laufen im Kreis: rot, orange, gelb, grün, türkis, blau, wieder rot.
 - Die Anzeige zeigt beim Warten auf eine Taste die Nummer des Versuchs.
 - Nach einer Farbtaste dauert es etwa 0,4 Sekunden, bis die nächste Taste angenommen wird, nach `F` etwa 2 Sekunden. In dieser Zeit nimmt das Programm keine Taste an.
-- **Emulator2090:** Die Hex-Tasten der Computertastatur sind die Tasten des 2090, `m` schaltet die Matrix ein.
 
 ## Einstellen
 
@@ -60,8 +57,6 @@ Farbnummern der Matrix: 1 rot, 2 orange, 3 gelb, 4 grün, 5 türkis, 6 blau, 7 v
 - **Zahl der Versuche:** Adresse 80, Befehl `987` (`CMPI 8,r7`). Weniger Versuche gehen auch, zum Beispiel sechs mit `967`; mehr als acht passen nicht auf die Matrix.
 
 ## Wie es gemacht ist
-
-Der 2090 hat 16 Register zu je 4 Bit, dazu 16 Speicherregister, und keine indirekte Adressierung: Ein Programm kann nicht „das Register Nummer i“ lesen. Bei Superhirn trifft das vor allem den Vergleich von Versuch und Code.
 
 - **Wo alles steht.** Der Versuch steht in R0 bis R3, ein Stecker je Register, als Farbnummer 1-6. Der Code steht während des ganzen Spiels in den Speicherregistern M8 bis MB.
 - **Jede Taste verzweigt einzeln.** Ohne indirekte Adressierung kann das Programm nicht „Stecker k“ ändern. Es fragt die Taste nacheinander ab und hat für jeden Stecker ein eigenes kleines Stück Programm, das die Farbe in ein Hilfsregister holt, weiterschaltet und zurückschreibt.
@@ -83,15 +78,17 @@ Auf Computern lief es früh: In den 1960er Jahren schrieb Frank King eine Fassun
 
 ### Mastermind und Superhirn
 
-Mit farbigen Steckern erfand Mordecai Meirowitz das Spiel 1970. Er war israelischer Postbeamter und Fachmann für Fernmeldetechnik. 1971 zeigte er es auf der Nürnberger Spielwarenmesse, wo die englische Firma Invicta Plastics die Rechte kaufte. Invicta überarbeitete das Spiel und brachte es 1971/72 als *Master Mind* heraus. Es wurde mit über 50 Millionen verkauften Exemplaren in 80 Ländern das erfolgreichste neue Spiel der 1970er Jahre. In Israel heißt es *Bul Pgi'a*, in Deutschland brachte es Parker als **Superhirn** heraus.
+Mit farbigen Steckern erfand Mordecai Meirowitz das Spiel 1970. Er war israelischer Postbeamter und Fachmann für Fernmeldetechnik. 1971 zeigte er es auf der Nürnberger Spielwarenmesse, wo die englische Firma Invicta Plastics die Rechte kaufte. Invicta überarbeitete das Spiel und brachte es 1971/72 als *Master Mind* heraus. Es wurde mit über 50 Millionen verkauften Exemplaren in 80 Ländern das erfolgreichste neue Spiel der 1970er Jahre. In Deutschland brachte es Parker als **Superhirn** heraus - was uns damals wie ein völlig legitimer Name für ein Spiel erschien.
 
-Ende der 1970er Jahre kamen elektronische Fassungen, genau in der Art von Gerät, um die es hier geht: Invicta baute ein *Electronic Master Mind*, und Parker verkaufte 1978 das *SuperHirn electronic*, mit einem Expertenspiel aus fünf Steckplätzen und acht Farben, betrieben mit einer 9-Volt-Batterie. Statt farbiger Stecker zeigten solche Geräte Ziffern.
+Ende der 1970er Jahre kamen elektronische Fassungen, genau in der Art von Gerät, um die es hier geht: Invicta baute ein *Electronic Master Mind*, und Parker verkaufte 1978 das *SuperHirn electronic*, mit einem Expertenspiel aus fünf Steckplätzen und acht Farben, betrieben mit einer 9-Volt-Batterie. Statt farbiger Stecker zeigten solche Geräte Ziffern. Und wie könnte es anders sein - innendrin werkelte natürlich wieder ein TMS1000.
 
 ### Knuth und die fünf Versuche
 
 Donald Knuth zeigte 1976/77 in seinem Aufsatz *The Computer as Master Mind*, dass man jeden der 1296 Codes in höchstens fünf Versuchen findet. Seine Strategie beginnt mit 1122, also zwei Farben je zweimal, und wählt dann immer den Versuch, der im ungünstigsten Fall am meisten Möglichkeiten ausschließt. Im Mittel braucht sie 4,478 Versuche. Kenji Koyama und Tony W. Lai fanden 1993 durch vollständige Suche die im Mittel beste Strategie: 5625/1296, etwa 4,340 Versuche.
 
-Auf dem 2090 hat man acht Versuche und kein Papier, aber die Matrix hält alle Versuche fest. Ein einfacher Testspieler, der immer den ersten Code nimmt, der zu allen bisherigen Bewertungen passt, braucht im Emulator meist vier bis sechs Versuche.
+Auf dem 2090 hat man acht Versuche und kein Papier, aber die Matrix hält alle Versuche fest. Ein einfacher Testspieler, der immer den ersten Code nimmt, der zu allen bisherigen Bewertungen passt, braucht meist vier bis sechs Versuche.
+
+Wer den Code nach acht Versuchen immer noch nicht geknackt hat, macht was falsch - oder hat halt kein Superhirn.
 
 ## Quellen
 
